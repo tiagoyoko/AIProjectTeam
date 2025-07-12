@@ -1,0 +1,47 @@
+{
+    "name": "aiprojectteam",
+    "version": "1.0.0",
+    "private": true,
+    "packageManager": "pnpm@9.0.0",
+    "scripts": {
+        "dev": "turbo run dev",
+        "build": "turbo run build",
+        "lint": "turbo run lint",
+        "test": "turbo run test",
+        "docker:build": "docker-compose build",
+        "docker:up": "docker-compose up -d",
+        "docker:down": "docker-compose down",
+        "docker:logs": "docker-compose logs -f",
+        "docker:restart": "docker-compose restart",
+        "docker:clean": "docker-compose down -v && docker system prune -f",
+        "type-check": "turbo run type-check",
+        "prepare": "husky",
+        "test:rls": "dotenv -e .env.local -- ts-node tools/scripts/test-rls-policies.ts"
+    },
+    "devDependencies": {
+        "@types/node": "^20.0.0",
+        "@typescript-eslint/eslint-plugin": "^6.0.0",
+        "@typescript-eslint/parser": "^6.0.0",
+        "dotenv-cli": "^8.0.0",
+        "eslint": "^8.0.0",
+        "husky": "^9.1.7",
+        "lint-staged": "^16.1.2",
+        "prettier": "^3.0.0",
+        "ts-node": "^10.9.2",
+        "turbo": "^1.13.0",
+        "typescript": "^5.8.3"
+    },
+    "lint-staged": {
+        "*.{ts,tsx,js,jsx}": [
+            "eslint --fix",
+            "prettier --write"
+        ],
+        "*.{json,md,yml,yaml}": [
+            "prettier --write"
+        ]
+    },
+    "dependencies": {
+        "@supabase/supabase-js": "^2.50.5",
+        "openai": "^5.9.0"
+    }
+}

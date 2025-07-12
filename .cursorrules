@@ -1,0 +1,220 @@
+# Cursor Rules - AI Project Team
+
+## Configuração Geral
+- **Idioma**: Sempre responder em português brasileiro (pt-BR)
+- **Framework**: Next.js 14 + React 18 + TypeScript
+- **Backend**: Supabase (PostgreSQL + pgvector + Auth)
+- **Estilo**: Tailwind CSS v3
+- **Monorepo**: Turborepo + pnpm workspaces
+- **Comunicação**: WhatsApp obrigatório para interação com agentes
+
+## Regras Supabase - Backend Database
+
+### 🔐 Segurança e Autenticação
+- **NUNCA** exponha Service Role Key no frontend
+- Use apenas Public (anon) key no lado cliente
+- Armazene keys sensíveis em `.env.local` (nunca commitado)
+- Use `NEXT_PUBLIC_` apenas para dados públicos
+- Sempre habilite RLS para tabelas sensíveis
+- Implemente MFA obrigatório para usuários
+- Configure verificação de email obrigatória
+
+### 🗄️ Tipagem e Schema do Banco
+- **SEMPRE** use surrogate keys (UUIDs) como primary keys
+- Defina tipos TypeScript a partir de schemas Supabase
+- Use `supabase gen types typescript` para gerar tipos automaticamente
+- Valide dados com Zod antes de inserir no banco
+- Configure foreign keys e constraints rigorosamente
+- Use enums PostgreSQL para valores fixos
+- Implemente triggers para audit logs
+
+### 📋 Estrutura de Tabelas Padrão
+```sql
+-- Exemplo de tabela com tipagem adequada
+CREATE TABLE users (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  email TEXT UNIQUE NOT NULL,
+  name TEXT NOT NULL,
+  role user_role DEFAULT 'user',
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Enum para roles
+CREATE TYPE user_role AS ENUM ('user', 'admin', 'agent');
+```
+
+### 🔒 Row-Level Security (RLS)
+- Configure RLS performático com cache
+- Use `(SELECT auth.uid())` para otimização
+- Implemente políticas granulares por operação
+- Teste políticas com diferentes contextos
+- Use RLS para SELECT, Server Actions para mutations
+
+### 🏗️ Arquitetura de Dados
+- Separe dados por tenant usando RLS
+- Use schemas separados para diferentes domínios
+- Implemente soft deletes com `deleted_at`
+- Configure indexes para queries frequentes
+- Use views para queries complexas reutilizáveis
+
+### 📦 Integração TypeScript
+```typescript
+// types/database.ts - Gerado automaticamente
+export interface Database {
+  public: {
+    Tables: {
+      users: {
+        Row: {
+          id: string
+          email: string
+          name: string
+          role: 'user' | 'admin' | 'agent'
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          email: string
+          name: string
+          role?: 'user' | 'admin' | 'agent'
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          email?: string
+          name?: string
+          role?: 'user' | 'admin' | 'agent'
+          updated_at?: string
+        }
+      }
+    }
+  }
+}
+
+// lib/supabase/client.ts
+import { createClient } from '@supabase/supabase-js'
+import { Database } from '@/types/database'
+
+export const supabase = createClient<Database>(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+)
+```
+
+### 🔧 Server Actions e Validação
+```typescript
+// schemas/user.ts
+import { z } from 'zod'
+
+export const UserInsertSchema = z.object({
+  email: z.string().email('Email inválido'),
+  name: z.string().min(1, 'Nome obrigatório'),
+  role: z.enum(['user', 'admin', 'agent']).default('user')
+})
+
+export type UserInsert = z.infer<typeof UserInsertSchema>
+
+// actions/user.ts
+'use server'
+import { UserInsertSchema } from '@/schemas/user'
+import { supabase } from '@/lib/supabase/server'
+
+export async function createUser(data: unknown) {
+  const validatedData = UserInsertSchema.parse(data)
+  
+  const { data: user, error } = await supabase
+    .from('users')
+    .insert(validatedData)
+    .select()
+    .single()
+    
+  if (error) throw error
+  return user
+}
+```
+
+### 🚀 Performance e Monitoramento
+- Configure connection pooling adequado
+- Use prepared statements para queries frequentes
+- Implemente cache Redis para dados estáticos
+- Configure monitoring de performance
+- Use explain analyze para otimizar queries
+
+### 📊 Vector Database (pgvector)
+- Configure dimensões adequadas para embeddings
+- Use indexes HNSW para performance
+- Implemente similarity search otimizada
+- Configure batch processing para embeddings
+- Use triggers para atualização automática
+
+### 🔄 Migrations e Deploy
+- Use migrations para todas as mudanças de schema
+- Versionamento semântico para migrations
+- Teste migrations em ambiente staging
+- Configure rollback automático se necessário
+- Documente breaking changes
+
+### 🛡️ Backup e Recovery
+- Configure backup automático diário
+- Teste procedures de recovery regularmente
+- Implemente point-in-time recovery
+- Configure replicação para alta disponibilidade
+- Monitore espaço de storage
+
+### 📈 Escalabilidade
+- Use read replicas para queries pesadas
+- Implemente sharding por tenant se necessário
+- Configure auto-scaling baseado em métricas
+- Use CDN para assets estáticos
+- Otimize queries N+1 com joins adequados
+
+## Estrutura de Arquivos
+```
+project/
+├── app/                 # Next.js App Router
+├── components/          # Componentes React
+├── lib/
+│   ├── supabase/       # Cliente e configurações
+│   └── utils/          # Utilitários gerais
+├── types/
+│   ├── database.ts     # Tipos gerados do Supabase
+│   └── schemas.ts      # Schemas Zod
+├── actions/            # Server Actions
+├── hooks/              # Custom hooks
+└── migrations/         # SQL migrations
+```
+
+## Comandos Essenciais
+```bash
+# Gerar tipos TypeScript
+supabase gen types typescript --project-id YOUR_PROJECT_ID > types/database.ts
+
+# Aplicar migrations
+supabase db push
+
+# Reset local database
+supabase db reset
+
+# Executar migrations
+supabase migration up
+```
+
+## Variáveis de Ambiente
+```bash
+# .env.local (nunca commitado)
+SUPABASE_SERVICE_ROLE_KEY=eyJ...
+SUPABASE_DB_WEBHOOK_SECRET=super_secret_key
+
+# .env (commitado)
+NEXT_PUBLIC_SUPABASE_URL=https://xxx.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJ...
+```
+
+## Validação Obrigatória
+- Toda entrada de dados deve ser validada com Zod
+- Tipos TypeScript devem ser gerados automaticamente
+- RLS deve ser testado com dados de diferentes usuários
+- Migrations devem ser testadas em staging primeiro
+- Performance deve ser monitorada continuamente 

@@ -1,0 +1,387 @@
+# TypeScript Rules - AI Project Team
+
+## 🎯 Configuração Geral
+- **Versão**: TypeScript 5.8.3
+- **Target**: ES2020
+- **Module**: ESNext
+- **Strict Mode**: Sempre habilitado
+- **Path Aliases**: Obrigatório para imports entre workspaces
+- **End-to-End Typing**: OBRIGATÓRIO - Todo o projeto deve ser 100% tipado
+- **Validação Prévia**: Sempre executar type-check antes de entregar tarefas
+
+## 📋 Regras de Tipagem
+
+### 1. Tipagem Estrita Obrigatória
+```typescript
+// ✅ CORRETO - Sempre tipar explicitamente
+interface User {
+  id: string;
+  email: string;
+  name: string;
+  role: 'user' | 'admin' | 'agent';
+  createdAt: Date;
+}
+
+// ❌ INCORRETO - Evitar any
+function processData(data: any): any {
+  return data;
+}
+
+// ✅ CORRETO - Usar generics
+function processData<T>(data: T): T {
+  return data;
+}
+```
+
+### 2. Interfaces vs Types
+```typescript
+// ✅ Use interface para objetos extensíveis
+interface BaseUser {
+  id: string;
+  email: string;
+}
+
+interface AdminUser extends BaseUser {
+  permissions: string[];
+}
+
+// ✅ Use type para unions, primitivos e computed types
+type Status = 'pending' | 'approved' | 'rejected';
+type UserWithStatus = User & { status: Status };
+```
+
+### 3. Enums e Constantes
+```typescript
+// ✅ CORRETO - Use const enum para performance
+const enum UserRole {
+  USER = 'user',
+  ADMIN = 'admin',
+  AGENT = 'agent'
+}
+
+// ✅ CORRETO - Use const assertion para objetos
+const API_ENDPOINTS = {
+  USERS: '/api/users',
+  PROJECTS: '/api/projects',
+  AGENTS: '/api/agents'
+} as const;
+
+type ApiEndpoint = typeof API_ENDPOINTS[keyof typeof API_ENDPOINTS];
+```
+
+## 🏗️ Estrutura de Arquivos
+
+### 1. Arquivo Único de Referência OBRIGATÓRIO
+```
+types/
+├── index.ts         # ⭐ ARQUIVO ÚNICO DE REFERÊNCIA - Export central
+├── database.ts      # Tipos gerados do Supabase
+├── api.ts          # Tipos de API requests/responses
+├── components.ts   # Props de componentes
+└── global.d.ts     # Declarações globais
+
+schemas/
+└── index.ts        # Schemas Zod centralizados
+```
+
+### 2. Regra do Arquivo Único
+```typescript
+// types/index.ts - PONTO ÚNICO DE VERDADE
+export * from './database';
+export * from './api';
+export * from './components';
+export * from '../schemas';
+
+// ✅ CORRETO - Import sempre do arquivo central
+import { User, UserSchema, Database } from '@/types';
+
+// ❌ INCORRETO - Imports diretos de arquivos específicos
+import { User } from '@/types/database';
+import { UserSchema } from '@/schemas/user';
+```
+
+### 2. Path Aliases Obrigatórios
+```typescript
+// ✅ CORRETO - Use path aliases
+import { User } from '@aiprojectteam/shared';
+import { Button } from '@aiprojectteam/ui';
+import { apiClient } from '@/lib/api';
+
+// ❌ INCORRETO - Evitar imports relativos longos
+import { User } from '../../../shared/src/types/user';
+```
+
+## 🔧 Integração com Zod
+
+### 1. Schema-First Development
+```typescript
+// schemas/user.ts
+import { z } from 'zod';
+
+export const UserSchema = z.object({
+  id: z.string().uuid(),
+  email: z.string().email(),
+  name: z.string().min(1),
+  role: z.enum(['user', 'admin', 'agent']),
+  createdAt: z.date()
+});
+
+export type User = z.infer<typeof UserSchema>;
+
+// Partial para updates
+export const UserUpdateSchema = UserSchema.partial().omit({ id: true });
+export type UserUpdate = z.infer<typeof UserUpdateSchema>;
+```
+
+### 2. Validação em Server Actions
+```typescript
+// actions/user.ts
+'use server';
+
+import { UserSchema } from '@/schemas/user';
+
+export async function createUser(data: unknown) {
+  // Sempre validar entrada
+  const validatedData = UserSchema.parse(data);
+  
+  // Usar tipos inferidos
+  const user: User = await database.users.create(validatedData);
+  return user;
+}
+```
+
+## 🎯 Padrões de Componentes
+
+### 1. Props com TypeScript
+```typescript
+// ✅ CORRETO - Props bem tipadas
+interface ButtonProps {
+  children: React.ReactNode;
+  variant?: 'primary' | 'secondary';
+  size?: 'sm' | 'md' | 'lg';
+  onClick?: () => void;
+  disabled?: boolean;
+}
+
+export const Button: React.FC<ButtonProps> = ({
+  children,
+  variant = 'primary',
+  size = 'md',
+  ...props
+}) => {
+  return <button {...props}>{children}</button>;
+};
+```
+
+### 2. Hooks Tipados
+```typescript
+// ✅ CORRETO - Custom hooks tipados
+interface UseUserReturn {
+  user: User | null;
+  loading: boolean;
+  error: string | null;
+  refetch: () => Promise<void>;
+}
+
+export function useUser(): UseUserReturn {
+  const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const refetch = useCallback(async () => {
+    try {
+      setLoading(true);
+      const userData = await fetchUser();
+      setUser(userData);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Unknown error');
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  return { user, loading, error, refetch };
+}
+```
+
+## 🗄️ Database Types
+
+### 1. Supabase Integration
+```typescript
+// types/database.ts - Auto-gerado
+export interface Database {
+  public: {
+    Tables: {
+      users: {
+        Row: User;
+        Insert: Omit<User, 'id' | 'createdAt'>;
+        Update: Partial<Omit<User, 'id'>>;
+      };
+    };
+  };
+}
+
+// lib/supabase/client.ts
+import { createClient } from '@supabase/supabase-js';
+import { Database } from '@/types/database';
+
+export const supabase = createClient<Database>(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+);
+```
+
+### 2. Type Guards
+```typescript
+// utils/type-guards.ts
+export function isUser(value: unknown): value is User {
+  return UserSchema.safeParse(value).success;
+}
+
+export function isError(value: unknown): value is Error {
+  return value instanceof Error;
+}
+
+// Usage
+if (isUser(data)) {
+  // data é tipado como User aqui
+  console.log(data.email);
+}
+```
+
+## 🚀 Performance e Otimização
+
+### 1. Lazy Loading de Types
+```typescript
+// ✅ CORRETO - Import dinâmico para types pesados
+type HeavyComponentProps = import('./HeavyComponent').HeavyComponentProps;
+
+const LazyComponent = lazy(() => import('./HeavyComponent'));
+```
+
+### 2. Utility Types
+```typescript
+// utils/types.ts
+export type Optional<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
+export type RequiredFields<T, K extends keyof T> = T & Required<Pick<T, K>>;
+
+// Usage
+type UserWithOptionalEmail = Optional<User, 'email'>;
+type UserWithRequiredRole = RequiredFields<User, 'role'>;
+```
+
+## ✅ Validações Obrigatórias
+
+### 1. ESLint Rules TypeScript
+```json
+{
+  "@typescript-eslint/no-explicit-any": "error",
+  "@typescript-eslint/no-unused-vars": "error",
+  "@typescript-eslint/explicit-function-return-type": "warn",
+  "@typescript-eslint/prefer-nullish-coalescing": "error",
+  "@typescript-eslint/prefer-optional-chain": "error"
+}
+```
+
+### 2. Comandos de Verificação
+```bash
+# Type checking obrigatório
+pnpm type-check
+
+# Gerar tipos do Supabase
+supabase gen types typescript --project-id PROJECT_ID > types/database.ts
+
+# Build com verificação de tipos
+pnpm build
+```
+
+## 🔍 Debugging e Troubleshooting
+
+### 1. Type Assertions Seguras
+```typescript
+// ✅ CORRETO - Use type guards
+function processUser(data: unknown) {
+  if (isUser(data)) {
+    return data.email; // Seguro
+  }
+  throw new Error('Invalid user data');
+}
+
+// ❌ INCORRETO - Evitar as assertions
+const user = data as User; // Perigoso
+```
+
+### 2. Conditional Types
+```typescript
+// Para APIs condicionais
+type ApiResponse<T> = {
+  success: true;
+  data: T;
+} | {
+  success: false;
+  error: string;
+};
+
+function handleResponse<T>(response: ApiResponse<T>): T {
+  if (response.success) {
+    return response.data; // TypeScript sabe que data existe
+  }
+  throw new Error(response.error); // TypeScript sabe que error existe
+}
+```
+
+## 🎯 End-to-End Typing OBRIGATÓRIO
+
+### 1. Cobertura Total de Tipos
+```typescript
+// ✅ OBRIGATÓRIO - 100% de cobertura de tipos
+// Nenhum 'any', 'unknown' sem type guards, ou tipos implícitos
+
+// Database → Schema → API → Frontend
+Database.Tables.users.Row → UserSchema → UserApiResponse → UserProps
+```
+
+### 2. Validação Contínua
+```bash
+# SEMPRE executar antes de entregar tasks
+pnpm type-check        # Verificação completa
+pnpm lint             # ESLint com regras TypeScript
+pnpm build            # Build com type checking
+```
+
+### 3. Pipeline de Tipagem
+```typescript
+// 1. Database Types (Auto-gerados)
+type DatabaseUser = Database['public']['Tables']['users']['Row'];
+
+// 2. Zod Schemas (Validação runtime)
+const UserSchema = z.object({...});
+
+// 3. API Types (Inferidos do schema)
+type User = z.infer<typeof UserSchema>;
+
+// 4. Component Props (Tipados explicitamente)
+interface UserCardProps {
+  user: User;
+  onEdit: (user: User) => void;
+}
+```
+
+### 4. Regras de Validação Prévia
+- **NUNCA** entregar task sem `pnpm type-check` passar
+- **SEMPRE** validar imports entre workspaces
+- **OBRIGATÓRIO** testar type inference em componentes
+- **CRÍTICO** verificar tipos em Server Actions
+
+## 📚 Recursos e Documentação
+
+- Sempre documente tipos complexos com TSDoc
+- Use comentários para explicar business logic
+- Mantenha types/schemas sincronizados com database
+- Execute type-check antes de commits
+- Use strict mode em todos os projetos
+- **OBRIGATÓRIO**: Validação end-to-end antes de entregar tasks
+description:
+globs:
+alwaysApply: false
+---

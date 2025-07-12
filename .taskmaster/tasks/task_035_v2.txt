@@ -1,0 +1,91 @@
+# Task ID: 35
+# Title: Implementar Endpoint REST para Consulta de Embeddings por Similaridade
+# Status: pending
+# Dependencies: 33, 25
+# Priority: medium
+# Description: Desenvolver um endpoint REST que permita consultas de embeddings por similaridade, com validação de entrada usando Zod, proteção por autenticação Supabase e retorno de resultados ordenados por score de similaridade.
+# Details:
+1. Estrutura do Endpoint:
+   - Criar rota `/api/embeddings/search` que aceita requisições POST
+   - Definir esquema de requisição que inclua:
+     - Texto de consulta ou vetor de embedding para comparação
+     - Parâmetros opcionais: limite de resultados, limiar de similaridade, filtros adicionais
+     - Namespace ou coleção para busca (se aplicável)
+
+2. Validação com Zod:
+   - Implementar esquema Zod para validar o corpo da requisição:
+   ```typescript
+   const searchSchema = z.object({
+     query: z.string().min(1).or(z.array(z.number())),
+     limit: z.number().positive().optional().default(10),
+     threshold: z.number().min(0).max(1).optional().default(0.7),
+     namespace: z.string().optional(),
+     filters: z.record(z.unknown()).optional()
+   });
+   ```
+   - Adicionar middleware para validação de entrada usando o esquema Zod
+   - Implementar tratamento de erros para requisições inválidas
+
+3. Autenticação com Supabase:
+   - Integrar middleware de autenticação Supabase para proteger o endpoint
+   - Verificar token JWT e extrair informações do usuário
+   - Implementar controle de acesso baseado em roles/permissões
+   - Adicionar rate limiting para prevenir abusos
+
+4. Processamento da Consulta:
+   - Se a entrada for texto, converter para embedding usando o serviço existente
+   - Implementar lógica para busca de similaridade vetorial no banco de dados
+   - Utilizar algoritmos eficientes para cálculo de similaridade (cosine, dot product, euclidean)
+   - Otimizar consulta para performance com índices vetoriais
+
+5. Formatação da Resposta:
+   - Retornar resultados ordenados por score de similaridade (decrescente)
+   - Incluir metadados relevantes junto com cada resultado
+   - Estruturar resposta em formato JSON padronizado:
+   ```json
+   {
+     "results": [
+       {
+         "id": "uuid",
+         "content": "texto original",
+         "metadata": { ... },
+         "score": 0.92
+       },
+       ...
+     ],
+     "count": 10,
+     "query": "texto de busca original"
+   }
+   ```
+   - Implementar paginação para grandes conjuntos de resultados
+
+6. Logging e Monitoramento:
+   - Adicionar logs detalhados para depuração e análise de performance
+   - Implementar métricas para monitorar tempo de resposta e uso do endpoint
+
+# Test Strategy:
+1. Testes Unitários:
+   - Testar validação de esquema Zod com diferentes formatos de entrada (válidos e inválidos)
+   - Verificar tratamento de erros para entradas malformadas
+   - Testar funções de cálculo de similaridade com vetores conhecidos
+
+2. Testes de Integração:
+   - Verificar fluxo completo desde a requisição até a resposta
+   - Testar autenticação com diferentes tipos de usuários e permissões
+   - Validar ordenação correta dos resultados por score de similaridade
+   - Testar com diferentes parâmetros de limite e limiar
+
+3. Testes de Performance:
+   - Medir tempo de resposta com diferentes tamanhos de coleções de embeddings
+   - Testar comportamento sob carga com múltiplas requisições simultâneas
+   - Verificar eficiência da busca vetorial com grandes volumes de dados
+
+4. Testes de Segurança:
+   - Verificar se endpoints estão devidamente protegidos contra acessos não autorizados
+   - Testar se rate limiting está funcionando corretamente
+   - Validar que informações sensíveis não são expostas nas respostas
+
+5. Testes de Casos de Uso:
+   - Simular cenários reais de busca por similaridade
+   - Verificar precisão dos resultados com diferentes tipos de consultas
+   - Testar com diferentes namespaces e filtros

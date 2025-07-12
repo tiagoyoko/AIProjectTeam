@@ -1,0 +1,55 @@
+# Task ID: 14
+# Title: Develop Methodology Agent
+# Status: pending
+# Dependencies: 6, 7
+# Priority: medium
+# Description: Create the specialist agent for methodology adaptation, ceremony planning, and process compliance
+# Details:
+1. Implement methodology selection logic
+2. Create hybrid methodology customization
+3. Develop ceremony and artifact recommendation
+4. Implement methodology compliance checking
+5. Create process improvement suggestions
+6. Develop methodology training content
+7. Implement agile maturity assessment
+8. Create methodology transition planning
+
+# Test Strategy:
+1. Test methodology selection appropriateness
+2. Validate hybrid approach effectiveness
+3. Verify ceremony recommendations relevance
+4. Test compliance checking accuracy
+5. Validate improvement suggestion practicality
+6. Verify training content clarity
+
+# Subtasks:
+## 1. Implement Methodology Selection and Customization Engine [pending]
+### Dependencies: None
+### Description: Create a core engine that allows users to select from predefined methodologies (Scrum, Kanban, XP, etc.) and customize them by combining elements to create hybrid approaches.
+### Details:
+Develop a data model for methodology components (roles, ceremonies, artifacts, principles). Implement selection logic with weighted criteria based on project characteristics. Create a recommendation algorithm that suggests appropriate methodologies based on team size, project complexity, and organizational constraints. Build a UI component for methodology selection and customization with drag-and-drop functionality for combining elements.
+
+## 2. Develop Ceremony and Artifact Recommendation System [pending]
+### Dependencies: 14.1
+### Description: Create a system that recommends appropriate ceremonies (meetings) and artifacts based on the selected methodology and project context.
+### Details:
+Implement a knowledge base of ceremonies and artifacts across methodologies. Create mapping between project characteristics and recommended ceremonies/artifacts. Develop scheduling logic for ceremony frequency and duration based on team size and sprint length. Build notification system for upcoming ceremonies and artifact deadlines. Implement templates for common artifacts (user stories, burndown charts, etc.).
+
+## 3. Implement Methodology Compliance Checking [pending]
+### Dependencies: 14.1
+### Description: Build a system to monitor and evaluate team adherence to the selected methodology, identifying deviations and compliance issues.
+### Details:
+Create compliance rules engine based on methodology requirements. Implement tracking of ceremony attendance, artifact creation, and role fulfillment. Develop metrics for methodology adherence (e.g., sprint commitment reliability, retrospective action completion). Build dashboard visualizing compliance levels across teams and projects. Implement alerting for critical compliance issues.
+
+## 4. Create Process Improvement and Maturity Assessment [pending]
+### Dependencies: 14.3
+### Description: Develop functionality to assess team agile maturity and generate targeted improvement suggestions based on compliance data and best practices.
+### Details:
+Implement agile maturity model with defined levels and assessment criteria. Create assessment questionnaires for teams and stakeholders. Develop algorithm to analyze compliance data and identify improvement opportunities. Build recommendation engine for process improvements prioritized by impact and effort. Implement tracking of improvement initiatives and their outcomes.
+
+## 5. Develop Methodology Training and Transition Planning [pending]
+### Dependencies: 14.1, 14.4
+### Description: Create functionality to generate training content and transition plans for teams adopting new methodologies or improving existing processes.
+### Details:
+Develop adaptive learning content for methodology training based on team's current knowledge level. Create role-specific training modules for different team members. Implement transition planning tool with phased approach to methodology adoption. Build simulation capabilities to demonstrate methodology concepts. Develop progress tracking for training completion and knowledge assessment.
+

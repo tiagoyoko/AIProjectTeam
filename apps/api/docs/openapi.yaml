@@ -1,0 +1,225 @@
+openapi: 3.0.0
+info:
+  title: AI Project Team API
+  description: API para sistema de agentes de IA com capacidades de ingestão de documentos e busca semântica
+  version: 1.0.0
+  contact:
+    name: AI Project Team
+    email: contato@aiprojectteam.com
+
+servers:
+  - url: http://localhost:3001
+    description: Servidor de desenvolvimento
+  - url: https://api.aiprojectteam.com
+    description: Servidor de produção
+
+paths:
+  /api/ingest:
+    post:
+      summary: Ingerir documento único
+      description: Processa um documento e gera embeddings para busca semântica
+      tags:
+        - Ingestão
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - title
+                - content
+              properties:
+                title:
+                  type: string
+                  description: Título do documento
+                  example: 'Manual do Usuário'
+                content:
+                  type: string
+                  description: Conteúdo do documento
+                  example: 'Este é o conteúdo do manual...'
+                metadata:
+                  type: object
+                  description: Metadados adicionais
+                  properties:
+                    category:
+                      type: string
+                      example: 'documentação'
+                    tags:
+                      type: array
+                      items:
+                        type: string
+                      example: ['manual', 'usuário']
+      responses:
+        '200':
+          description: Documento processado com sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        format: uuid
+                        example: '550e8400-e29b-41d4-a716-446655440000'
+                      title:
+                        type: string
+                        example: 'Manual do Usuário'
+                      embeddingGenerated:
+                        type: boolean
+                        example: true
+              examples:
+                sucesso:
+                  value:
+                    success: true
+                    data:
+                      id: 'uuid-gerado'
+                      title: 'Título do Documento'
+                      embeddingGenerated: true
+                erro:
+                  value:
+                    success: false
+                    error: 'Erro ao processar documento'
+        '400':
+          description: Dados inválidos
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  error:
+                    type: string
+                    example: 'Título é obrigatório'
+        '500':
+          description: Erro interno do servidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  error:
+                    type: string
+                    example: 'Erro interno do servidor'
+
+  /api/ingest/batch:
+    post:
+      summary: Ingerir múltiplos documentos
+      description: Processa múltiplos documentos em lote
+      tags:
+        - Ingestão
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - documents
+              properties:
+                documents:
+                  type: array
+                  items:
+                    type: object
+                    required:
+                      - title
+                      - content
+                    properties:
+                      title:
+                        type: string
+                        description: Título do documento
+                      content:
+                        type: string
+                        description: Conteúdo do documento
+                      metadata:
+                        type: object
+                        description: Metadados adicionais
+      responses:
+        '200':
+          description: Documentos processados com sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: object
+                    properties:
+                      processed:
+                        type: integer
+                        example: 5
+                      failed:
+                        type: integer
+                        example: 0
+                      results:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: string
+                              format: uuid
+                            title:
+                              type: string
+                            status:
+                              type: string
+                              enum: [success, error]
+        '400':
+          description: Dados inválidos
+        '500':
+          description: Erro interno do servidor
+
+components:
+  schemas:
+    Document:
+      type: object
+      required:
+        - title
+        - content
+      properties:
+        title:
+          type: string
+          description: Título do documento
+        content:
+          type: string
+          description: Conteúdo do documento
+        metadata:
+          type: object
+          description: Metadados adicionais
+
+    IngestResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        data:
+          type: object
+        error:
+          type: string
+
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+security:
+  - BearerAuth: []
+
+tags:
+  - name: Ingestão
+    description: Endpoints para ingestão de documentos

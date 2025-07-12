@@ -1,0 +1,55 @@
+# Task ID: 21
+# Title: Implement Project Creation Workflow
+# Status: pending
+# Dependencies: 7, 8, 9, 10
+# Priority: high
+# Description: Develop the end-to-end workflow for creating new projects from templates or external data
+# Details:
+1. Implement project template system
+2. Create project initialization wizard
+3. Develop data import from external systems
+4. Implement project parameter configuration
+5. Create team member assignment
+6. Develop initial risk assessment
+7. Implement milestone definition
+8. Create project baseline establishment
+
+# Test Strategy:
+1. Test project creation from templates
+2. Validate data import from various sources
+3. Verify parameter configuration
+4. Test team assignment functionality
+5. Validate initial risk assessment
+6. Verify milestone definition
+
+# Subtasks:
+## 1. Implement Project Template System [pending]
+### Dependencies: None
+### Description: Create a system for defining, storing, and retrieving project templates that will serve as the foundation for new projects.
+### Details:
+Develop a database schema for storing project templates with fields for template name, description, default parameters, and structure. Create API endpoints for CRUD operations on templates. Implement a template manager service that handles template validation, versioning, and retrieval. Design a UI component for template selection that displays template previews and details.
+
+## 2. Create Project Initialization Wizard [pending]
+### Dependencies: 21.1
+### Description: Develop a step-by-step wizard interface that guides users through the project creation process, from template selection to initial configuration.
+### Details:
+Design a multi-step wizard UI with progress tracking. Implement form validation for each step. Create a wizard state management service to maintain data across steps. Develop components for template selection, basic project info entry, and configuration options. Implement a wizard completion handler that triggers project creation.
+
+## 3. Implement External Data Import System [pending]
+### Dependencies: 21.1
+### Description: Create functionality to import project data from external systems, including mapping external data structures to the internal project model.
+### Details:
+Develop adapters for common external systems (e.g., MS Project, Jira, Excel). Create a data mapping configuration interface. Implement a validation system to check imported data integrity. Build a preview mechanism to show users how imported data will appear. Develop an import history and logging system for troubleshooting.
+
+## 4. Develop Project Parameter Configuration and Team Assignment [pending]
+### Dependencies: None
+### Description: Create interfaces and backend logic for configuring project parameters and assigning team members to the new project.
+### Details:
+Implement a project settings interface for configuring parameters like start date, duration, budget, and custom fields. Create a team member selection component with role assignment capabilities. Develop permission setting controls for team members. Implement validation logic for parameter constraints. Create a notification system to alert assigned team members.
+
+## 5. Implement Risk Assessment and Milestone Definition [pending]
+### Dependencies: 21.4
+### Description: Create functionality for initial risk assessment and milestone definition as part of the project creation process, establishing the project baseline.
+### Details:
+Develop a risk assessment framework with configurable risk categories and impact levels. Create a milestone definition interface with timeline visualization. Implement dependency tracking between milestones. Build a baseline establishment process that captures the initial project state. Create reporting views for risks and milestones. Implement approval workflow for finalizing the project creation.
+

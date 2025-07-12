@@ -1,0 +1,29 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "lib": ["ES2020"],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "incremental": true,
+    "noEmit": true,
+    "baseUrl": ".",
+    "paths": {
+      "@aiprojectteam/shared": ["./packages/shared/src"],
+      "@aiprojectteam/shared/*": ["./packages/shared/src/*"],
+      "@aiprojectteam/ui": ["./packages/ui/src"],
+      "@aiprojectteam/ui/*": ["./packages/ui/src/*"],
+      "@aiprojectteam/config": ["./packages/config"],
+      "@aiprojectteam/config/*": ["./packages/config/*"],
+      "@/types": ["./packages/shared/src/types"],
+      "@/types/*": ["./packages/shared/src/types/*"],
+      "@/schemas/*": ["./packages/shared/src/schemas/*"]
+    }
+  },
+  "exclude": ["node_modules", "dist", "build", ".next", ".turbo"]
+}

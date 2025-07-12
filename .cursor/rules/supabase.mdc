@@ -1,0 +1,319 @@
+
+# Regras Supabase - AI Project Team
+
+## Configuração do Projeto
+- **Project ID**: fcmjqihdwhlgfljdewam
+- **URL**: https://fcmjqihdwhlgfljdewam.supabase.co
+- **Região**: South America (sa-east-1)
+
+## Supabase e GraphQL
+
+### Cliente e Interações
+- Use o cliente Supabase para interações com banco de dados e subscriptions em tempo real
+- Implemente Row Level Security (RLS) policies para controle de acesso granular
+- Use Supabase Auth para autenticação e gerenciamento de usuários
+- Aproveite Supabase Storage para uploads e gerenciamento de arquivos
+- Use Supabase Edge Functions para endpoints API serverless quando necessário
+- Use o cliente GraphQL gerado (GenQL) para interações type-safe com Supabase
+- Otimize queries GraphQL para buscar apenas dados necessários
+- Use GenQL queries para buscar grandes datasets eficientemente
+- Implemente autenticação e autorização adequadas usando Supabase RLS e Policies
+
+## Convenções Principais
+
+### 1. Roteamento e Estado
+- Confie no Next.js App Router para mudanças de estado e roteamento
+- Priorize Web Vitals (LCP, CLS, FID)
+
+### 2. Uso do Cliente
+- Minimize uso de 'use client'
+- Prefira server components e recursos SSR do Next.js
+- Use 'use client' APENAS para acesso à Web API em componentes pequenos
+- Evite usar 'use client' para data fetching ou gerenciamento de estado
+- **CRÍTICO**: NUNCA chame createServerSupabaseClient() no nível da página durante build
+- Use verificação de autenticação apenas em Server Actions ou dentro de try/catch
+
+### 3. Estrutura Monorepo
+- Siga a estrutura monorepo:
+  - Coloque código compartilhado no diretório 'packages'
+  - Mantenha código específico de apps no diretório 'apps'
+  - Use 'packages/shared/src/types/index.ts' como arquivo único de referência para tipos
+
+### 4. Data Fetching e State Management
+- Use React Server Components para data fetching quando possível
+- Implemente o padrão preload para prevenir waterfalls
+- Aproveite Supabase para sincronização de dados em tempo real e gerenciamento de estado
+- Use Vercel KV para histórico de chat, rate limiting e armazenamento de sessão quando apropriado
+
+### 5. Patterns de Build-Safe
+- Use verificação de environment em runtime, não build time
+- Evite chamadas de cliente Supabase durante SSG/build
+- Prefira middleware para verificação de autenticação em páginas
+- Use loading states para verificação client-side de auth
+
+## Segurança e Autenticação
+
+### 🔐 Regras de Segurança Críticas
+- **NUNCA** exponha Service Role Key no frontend
+- Use apenas Public (anon) key no lado cliente
+- Armazene keys sensíveis em `.env.local` (nunca commitado)
+- Use `NEXT_PUBLIC_` apenas para dados públicos
+- Sempre habilite RLS para tabelas sensíveis
+- Implemente MFA obrigatório para usuários
+- Configure verificação de email obrigatória
+
+### 🔒 Row-Level Security (RLS)
+- Configure RLS performático com cache
+- Use `(SELECT auth.uid())` para otimização
+- Implemente políticas granulares por operação
+- Teste políticas com diferentes contextos
+- Use RLS para SELECT, Server Actions para mutations
+
+## Estrutura de Dados
+
+### 🗄️ Tipagem e Schema
+- **SEMPRE** use surrogate keys (UUIDs) como primary keys
+- Defina tipos TypeScript a partir de schemas Supabase
+- Use `supabase gen types typescript` para gerar tipos automaticamente
+- Valide dados com Zod antes de inserir no banco
+- Configure foreign keys e constraints rigorosamente
+- Use enums PostgreSQL para valores fixos
+- Implemente triggers para audit logs
+
+### 📋 Tabelas Implementadas
+```sql
+-- Schema atual do projeto
+users, projects, tasks, agents, knowledge_base, 
+conversations, messages, audit_logs
+
+-- Enums PostgreSQL
+user_role, project_status, task_status, priority_level,
+agent_type, content_type, message_type, sender_type, conversation_status
+```
+
+## Integração TypeScript
+
+### 📦 Cliente Configurado
+```typescript
+// lib/supabase/client.ts - Frontend
+import { createClient } from '@supabase/supabase-js'
+import { Database } from '@/types/database'
+
+export const supabase = createClient<Database>(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+)
+
+// lib/supabase/server.ts - Server Actions
+import { createClient } from '@supabase/supabase-js'
+import { Database } from '@/types/database'
+
+export const supabaseServer = createClient<Database>(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!
+)
+```
+
+### 🔧 Server Actions e Validação
+```typescript
+'use server'
+import { UserInsertSchema } from '@/schemas'
+import { supabaseServer } from '@/lib/supabase/server'
+
+export async function createUser(data: unknown) {
+  const validatedData = UserInsertSchema.parse(data)
+  
+  const { data: user, error } = await supabaseServer
+    .from('users')
+    .insert(validatedData)
+    .select()
+    .single()
+    
+  if (error) throw error
+  return user
+}
+```
+
+### 🔄 Data Fetching Patterns
+```typescript
+// Server Component - Data fetching preferido
+export default async function ProjectsPage() {
+  const { data: projects } = await supabase
+    .from('projects')
+    .select('*')
+    .order('created_at', { ascending: false })
+  
+  return <ProjectsList projects={projects} />
+}
+
+// Preload pattern para prevenir waterfalls
+export async function preloadProjects() {
+  void supabase.from('projects').select('*')
+}
+
+// Real-time subscriptions (use client)
+'use client'
+export function useRealtimeProjects() {
+  const [projects, setProjects] = useState([])
+  
+  useEffect(() => {
+    const subscription = supabase
+      .channel('projects')
+      .on('postgres_changes', 
+        { event: '*', schema: 'public', table: 'projects' },
+        (payload) => {
+          // Atualizar estado em tempo real
+        }
+      )
+      .subscribe()
+      
+    return () => subscription.unsubscribe()
+  }, [])
+  
+  return projects
+}
+```
+
+## Performance e Funcionalidades
+
+### 🚀 Vector Database (pgvector)
+- Configure dimensões adequadas para embeddings (1536 para OpenAI)
+- Use indexes HNSW para performance
+- Implemente similarity search otimizada com função `match_knowledge_base()`
+- Configure batch processing para embeddings
+- Use triggers para atualização automática
+
+### 📊 Funções Implementadas
+- `match_knowledge_base()` - Busca semântica
+- `get_project_stats()` - Estatísticas de projeto
+- `create_audit_log()` - Sistema de auditoria
+- `update_conversation_last_message()` - Timestamp de conversas
+
+### 🔄 Migrations e Deploy
+- Use migrations para todas as mudanças de schema
+- Versionamento semântico para migrations
+- Teste migrations em ambiente staging
+- Configure rollback automático se necessário
+- Documente breaking changes
+
+### ⚡ State Management e Cache
+- **Supabase Realtime**: Para sincronização de estado em tempo real
+- **Vercel KV**: Para cache de sessões, rate limiting e histórico de chat
+- **React Server Components**: Para reduzir JavaScript no cliente
+- **Preload Pattern**: Para prevenir waterfalls de requisições
+
+```typescript
+// Exemplo Vercel KV para chat history
+import { kv } from '@vercel/kv'
+
+export async function saveChatMessage(userId: string, message: string) {
+  const key = `chat:${userId}`
+  await kv.lpush(key, JSON.stringify({
+    message,
+    timestamp: Date.now()
+  }))
+  
+  // Rate limiting
+  const rateLimitKey = `rate:${userId}`
+  const count = await kv.incr(rateLimitKey)
+  if (count === 1) {
+    await kv.expire(rateLimitKey, 60) // 1 minuto
+  }
+  
+  return count <= 10 // Max 10 mensagens por minuto
+}
+```
+
+## Comandos Essenciais
+
+```bash
+# Gerar tipos TypeScript
+supabase gen types typescript --project-id fcmjqihdwhlgfljdewam > packages/shared/src/types/database.ts
+
+# Validar configuração
+pnpm type-check && pnpm build
+
+# Testar conexão (via MCP tools)
+# Use ferramentas MCP Supabase para operações
+```
+
+## Variáveis de Ambiente
+
+```bash
+# .env.local (nunca commitado)
+NEXT_PUBLIC_SUPABASE_URL=https://fcmjqihdwhlgfljdewam.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJ...
+SUPABASE_SERVICE_ROLE_KEY=eyJ... # Pendente configuração
+
+# Vercel KV para cache e rate limiting
+KV_REST_API_URL=your_kv_url
+KV_REST_API_TOKEN=your_kv_token
+
+# .env.example (commitado)
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_anon_key
+SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
+KV_REST_API_URL=your_kv_url
+KV_REST_API_TOKEN=your_kv_token
+```
+
+## Estado Atual - PROBLEMAS CRÍTICOS RESOLVIDOS
+
+### ⚠️ PROBLEMAS IDENTIFICADOS E RESOLVIDOS
+1. **Build Failure**: createServerSupabaseClient() chamado durante build em pages
+2. **SSR Auth Check**: Verificação de autenticação durante build causando erro
+3. **Port Conflicts**: Múltiplos processos Next.js rodando na porta 3000
+4. **Environment Variables**: Variáveis não disponíveis durante build time
+
+### ✅ Implementado e Funcionando
+- Projeto Supabase criado e configurado ✅
+- 8 tabelas principais + 9 enums ✅
+- Vector database com pgvector ✅
+- Audit logs automáticos ✅
+- Tipos TypeScript gerados ✅
+- Clientes frontend e server configurados ✅
+- 40+ índices de performance ✅
+- Funções customizadas implementadas ✅
+- AuthWrapper para separação Client/Server ✅
+- Resolução de conflitos de porta ✅
+
+### 🔄 Correções em Andamento
+- Remoção de auth checks durante build ⚠️
+- Migração para middleware auth ⚠️
+- Client-side auth verification ⚠️
+
+### ✅ Padrões de Build Corretos
+```typescript
+// ❌ ERRADO - Falha no build
+export default async function LoginPage() {
+  const supabase = createServerSupabaseClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  // ... resto
+}
+
+// ✅ CORRETO - Build seguro
+export default function LoginPage() {
+  return (
+    <div>
+      <AuthCheckWrapper>
+        <LoginForm />
+      </AuthCheckWrapper>
+    </div>
+  )
+}
+
+// ✅ CORRETO - Server Action
+'use server'
+export async function serverAction() {
+  try {
+    const supabase = createServerSupabaseClient()
+    // ... lógica segura
+  } catch (error) {
+    // Handle gracefully
+  }
+}
+```
+
+- Backup e recovery procedures
+- Implementação de preload patterns
+- Sistema de rate limiting para WhatsApp

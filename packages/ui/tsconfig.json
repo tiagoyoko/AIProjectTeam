@@ -1,0 +1,14 @@
+{
+  "extends": "../../tsconfig.lib.json",
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "lib": ["dom", "dom.iterable", "es6"],
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"],
+      "@aiprojectteam/shared": ["../shared/src"],
+      "@aiprojectteam/shared/*": ["../shared/src/*"]
+    }
+  },
+  "include": ["src/**/*"]
+}

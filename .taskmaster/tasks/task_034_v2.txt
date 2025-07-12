@@ -1,0 +1,64 @@
+# Task ID: 34
+# Title: Integrar Documentação do Serviço de Embeddings com Swagger UI
+# Status: pending
+# Dependencies: 33
+# Priority: medium
+# Description: Integrar o arquivo openapi.yaml ao Swagger UI para testes e validação da API de embeddings, além de adicionar exemplos de uso em múltiplas linguagens.
+# Details:
+1. Configuração do Swagger UI:
+   - Instalar e configurar o Swagger UI no ambiente de desenvolvimento
+   - Integrar o arquivo openapi.yaml existente ao Swagger UI
+   - Configurar rotas para acesso à documentação interativa
+   - Personalizar a interface do Swagger UI com cores e logo do projeto
+
+2. Adição de exemplos em múltiplas linguagens:
+   - Criar exemplos de requisições em Python usando bibliotecas como requests ou httpx
+   - Desenvolver exemplos em cURL para uso em linha de comando
+   - Adicionar exemplos em JavaScript/Node.js para integração frontend
+   - Incluir exemplos em Java e Go para completude
+   - Garantir que todos os exemplos incluam autenticação e tratamento de erros
+
+3. Atualização da documentação principal:
+   - Atualizar o README principal do projeto com seção específica sobre o serviço de embeddings
+   - Adicionar links para a documentação interativa do Swagger UI
+   - Incluir instruções básicas de uso e exemplos simplificados
+   - Criar diagrama de fluxo mostrando como o serviço de embeddings se integra ao restante do sistema
+
+4. Integração com o memory-bank:
+   - Atualizar o memory-bank com links para a documentação gerada
+   - Adicionar resumos dos principais endpoints e funcionalidades
+   - Incluir exemplos de uso mais comuns para referência rápida
+
+5. Preparação para automação da documentação:
+   - Configurar estrutura para geração automática da documentação em ambiente CI/CD
+   - Definir processo de versionamento da documentação
+   - Preparar ambiente para publicação da documentação em produção
+
+# Test Strategy:
+1. Validação da integração com Swagger UI:
+   - Verificar se todos os endpoints do serviço de embeddings estão corretamente documentados
+   - Testar a funcionalidade "Try it out" do Swagger UI para cada endpoint
+   - Validar se os esquemas de requisição e resposta estão corretos
+   - Verificar se a autenticação funciona corretamente através da interface
+
+2. Teste dos exemplos de código:
+   - Executar cada exemplo de código em seu ambiente correspondente
+   - Verificar se as respostas recebidas correspondem ao esperado
+   - Validar se os exemplos de tratamento de erro funcionam corretamente
+   - Testar os exemplos com diferentes parâmetros e volumes de dados
+
+3. Revisão da documentação:
+   - Realizar revisão por pares da documentação atualizada
+   - Verificar se todas as informações estão atualizadas e precisas
+   - Validar links e referências cruzadas na documentação
+   - Testar a navegação e usabilidade da documentação
+
+4. Verificação da integração com memory-bank:
+   - Confirmar que todos os links no memory-bank estão funcionando
+   - Validar que os resumos são precisos e úteis
+   - Verificar se os exemplos no memory-bank estão atualizados
+
+5. Teste de preparação para automação:
+   - Simular o processo de geração automática da documentação
+   - Verificar se a estrutura de versionamento funciona corretamente
+   - Validar que o ambiente de publicação está configurado adequadamente

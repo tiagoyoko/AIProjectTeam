@@ -1,0 +1,83 @@
+# Task ID: 4
+# Title: Implement WhatsApp Integration via Evolution API
+# Status: pending
+# Dependencies: None
+# Priority: high
+# Description: Develop integration with WhatsApp using Evolution API to enable the primary communication channel for the AI agent system
+# Details:
+1. Set up Evolution API server
+2. Implement webhook handlers for incoming WhatsApp messages
+3. Create message sending service for outbound communications
+4. Develop message queue system for handling high volume
+5. Implement retry logic for failed message delivery
+6. Create message formatting utilities for rich content (markdown, tables)
+7. Set up session management for conversation context
+8. Implement rate limiting to prevent API abuse
+
+# Test Strategy:
+1. Test message reception from WhatsApp
+2. Verify outbound message delivery including formatting
+3. Simulate connection failures and verify retry mechanism
+4. Load test with concurrent messages
+5. Verify session persistence across disconnections
+6. Test multimedia content handling (documents, images)
+
+# Subtasks:
+## 1. Set up Evolution API server and configure environment [pending]
+### Dependencies: None
+### Description: Install and configure the Evolution API server to establish the foundation for WhatsApp integration. This includes setting up the necessary environment variables, authentication, and ensuring the server can connect to WhatsApp.
+### Details:
+1. Install Evolution API using Docker or direct installation
+2. Configure environment variables (API keys, WhatsApp credentials)
+3. Set up authentication mechanisms for secure access
+4. Implement basic health check endpoint
+5. Document the server setup process for team reference
+6. Ensure proper logging is configured
+
+## 2. Implement webhook handlers for incoming WhatsApp messages [pending]
+### Dependencies: None
+### Description: Create webhook endpoints to receive and process incoming messages from WhatsApp. This includes message parsing, validation, and routing to the appropriate handlers.
+### Details:
+1. Create webhook endpoint to receive incoming messages
+2. Implement message validation and security checks
+3. Parse different message types (text, media, location, etc.)
+4. Set up event emitters for different message types
+5. Implement error handling for malformed messages
+6. Create logging for all incoming messages
+
+## 3. Develop outbound message service with formatting utilities [pending]
+### Dependencies: None
+### Description: Create a service for sending messages to WhatsApp users with support for rich content formatting including text, media, buttons, and lists. Implement utilities to handle markdown conversion and table formatting.
+### Details:
+1. Create a message sending service that interfaces with Evolution API
+2. Implement formatters for rich content (markdown, tables, lists)
+3. Support different message types (text, media, interactive buttons)
+4. Create templates for common message patterns
+5. Implement media handling (images, documents, voice notes)
+6. Add support for interactive elements like buttons and lists
+
+## 4. Implement message queue and retry logic [pending]
+### Dependencies: None
+### Description: Develop a robust message queue system to handle high volumes of messages and implement retry logic for failed message deliveries to ensure reliability.
+### Details:
+1. Set up a message queue using Redis or similar technology
+2. Implement producer-consumer pattern for message processing
+3. Create retry mechanism with exponential backoff
+4. Set up dead letter queue for failed messages
+5. Implement monitoring and alerting for queue health
+6. Create admin dashboard for queue management
+7. Add metrics collection for queue performance
+
+## 5. Implement session management and rate limiting [pending]
+### Dependencies: None
+### Description: Create a session management system to maintain conversation context across messages and implement rate limiting to prevent API abuse and ensure system stability.
+### Details:
+1. Implement session storage using Redis or database
+2. Create session lifecycle management (creation, timeout, cleanup)
+3. Store conversation context within sessions
+4. Implement rate limiting middleware
+5. Create configurable rate limit rules per user/group
+6. Add rate limit headers to responses
+7. Implement graceful handling of rate limit exceeded scenarios
+8. Create monitoring for rate limit events
+

@@ -1,0 +1,17 @@
+{
+  "extends": "../../tsconfig.app.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"],
+      "@/components/*": ["./src/components/*"],
+      "@/lib/*": ["./src/lib/*"],
+      "@/hooks/*": ["./src/hooks/*"],
+      "@aiprojectteam/shared": ["../../packages/shared/src"],
+      "@aiprojectteam/shared/*": ["../../packages/shared/src/*"],
+      "@aiprojectteam/ui": ["../../packages/ui/src"],
+      "@aiprojectteam/ui/*": ["../../packages/ui/src/*"]
+    }
+  },
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "../../lib"]
+}

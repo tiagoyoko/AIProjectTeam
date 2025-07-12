@@ -1,0 +1,287 @@
+# PRD - Equipe de Agentes de IA para Gestão de Projetos
+
+## 1. RESUMO EXECUTIVO
+
+### 1.1 Visão Geral
+Desenvolvimento de uma equipe de agentes de IA autônoma para apoiar a gestão de projetos e programas, atuando como um PMO digital. A solução utilizará modelos de linguagem avançados para automatizar tarefas administrativas, gerar insights e melhorar o alinhamento estratégico, com interação exclusiva via WhatsApp [[memory:2752661]].
+
+### 1.2 Contexto de Mercado
+- Mercado de gerenciamento de projetos projetado para US$ 9,8 bilhões até 2026 (CAGR ~10,6%)
+- Apenas 43% dos projetos são entregues dentro do orçamento
+- Apenas 29% dos projetos cumprem o prazo
+- 11,4% dos recursos são desperdiçados devido à má gestão
+- 54% dos profissionais economizariam ~5h/semana com automação
+
+### 1.3 Público-Alvo
+- Gerentes de Projeto (PMs)
+- Product Managers
+- Fundadores e Executivos
+- Equipes Ágeis/Scrum Masters
+- Agências e PMOs Corporativos
+
+## 2. PROBLEMA E OPORTUNIDADE
+
+### 2.1 Problemas Identificados
+- Engajamento baixo das equipes
+- Escopo mal definido em projetos
+- Planejamento inadequado
+- Atrasos sistemáticos e falhas de comunicação
+- Tarefas repetitivas consumindo tempo excessivo
+- Falta de visibilidade em tempo real (54% dos PMs não têm dados ao vivo)
+- Alto desperdício de recursos (11,4% em média)
+
+### 2.2 Oportunidade
+Criar agentes de IA que reduzam retrabalho, forneçam visibilidade em tempo real e aliviem a carga administrativa, liberando tempo para decisões estratégicas. Exemplos de sucesso no mercado:
+- Zild.ai: integra ERP/CRM e cria estruturas de projeto automaticamente
+- ClickUp Brain: usa dados em tempo real para priorizar tarefas
+
+## 3. OBJETIVOS DO PRODUTO
+
+### 3.1 Objetivos Principais
+1. **Automatizar tarefas rotineiras**: Reduzir ≥50% do esforço manual em atividades administrativas
+2. **Melhorar prazos e orçamentos**: Elevar significativamente a taxa de sucesso (atual: 29% prazo, 43% orçamento)
+3. **Aumentar visibilidade**: Fornecer KPIs e relatórios em tempo real
+4. **Alinhar ao estratégico**: Vincular tarefas a OKRs e metas de negócio
+
+### 3.2 Critérios de Sucesso
+- Adoção: >X usuários ativos/semana
+- Satisfação: NPS/CSAT ≥4/5
+- Precisão: >Y% acerto nas tarefas automatizadas
+- ROI: Reduzir desperdício de recursos em ≥10%
+- Aumentar uso de dados em tempo real em 30%
+
+## 4. ARQUITETURA DA SOLUÇÃO
+
+### 4.1 Agente Orquestrador
+**Função Principal**: Coordenar solicitações e distribuir tarefas aos agentes especialistas
+
+**Características**:
+- Postura: Proativo, crítico e consultivo
+- Comunicação: Tom direto e respeitoso, adaptável ao perfil do usuário
+- Metodologias: PMBOK, Scrum, Kanban, Lean, SAFe, OKR (abordagens híbridas)
+- Capacidade de Decisão: Reordenar etapas, identificar riscos, corrigir requisitos
+- Formatos de Saída: Markdown, bullet points, tabelas, templates
+- Integrações: ClickUp, Notion, Trello, Jira, Microsoft Teams via API
+- Autonomia: Guardião de boas práticas com alertas proativos
+
+### 4.2 Equipe de Agentes Especialistas
+
+1. **Agente de Escopo**
+   - Define escopo do projeto
+   - Gera EAP, Project Charter, Canvas
+   - Identifica entregas, critérios de aceite e exclusões
+
+2. **Agente de Cronograma**
+   - Cria cronogramas realistas
+   - Aplica técnicas de caminho crítico
+   - Gera gráficos de Gantt e planeja sprints
+
+3. **Agente de Custos**
+   - Estima e controla custos (CAPEX/OPEX)
+   - Calcula ROI, payback e viabilidade
+   - Acompanha variações orçamentárias
+
+4. **Agente de Riscos**
+   - Identifica e classifica riscos
+   - Mantém matriz de riscos atualizada
+   - Gera planos de mitigação e contingência
+
+5. **Agente de Stakeholders & Comunicação**
+   - Mapeia stakeholders
+   - Define estratégias de engajamento
+   - Produz apresentações e relatórios adaptados
+
+6. **Agente de Indicadores & Performance**
+   - Define e monitora KPIs/OKRs
+   - Gera dashboards (burndown, earned value)
+   - Avalia saúde do projeto
+
+7. **Agente de Metodologia**
+   - Adapta abordagem (ágil/tradicional/híbrida)
+   - Sugere cerimônias e artefatos
+   - Garante compliance metodológico
+
+8. **Agente de Integração**
+   - Conecta ferramentas externas
+   - Cria automações e fluxos
+   - Assegura sincronismo entre sistemas
+
+9. **Agente de Qualidade**
+   - Define critérios de qualidade
+   - Cria planos de testes
+   - Atua preventivamente contra defeitos
+
+10. **Agente de Encerramento & Lições Aprendidas**
+    - Documenta encerramento
+    - Gera relatório de lições aprendidas
+    - Sugere melhorias para projetos futuros
+
+## 5. CAPACIDADES COGNITIVAS
+
+### 5.1 Capacidades Individuais
+- Analisar cenários complexos
+- Executar tarefas de ponta a ponta
+- Aprendizagem contínua
+- Colaboração mútua entre agentes
+- Transparência nas decisões
+- Alertas proativos
+
+### 5.2 Exemplo de Colaboração
+Se o Agente de Cronograma detecta atraso:
+1. Informa o Orquestrador
+2. Orquestrador aciona Agente de Custos
+3. Recalcula orçamento com novo prazo
+4. Sugere ajustes ou realocação
+5. Registra histórico completo para auditoria
+
+## 6. CASOS DE USO POR PERSONA
+
+### 6.1 Fernando - Gerente de Projetos
+- Fecha contrato e pede configuração via WhatsApp
+- Agente importa dados do ERP
+- Cria estrutura no Jira/ClickUp automaticamente
+- Recebe alertas proativos sobre desvios
+- Obtém recomendações baseadas em dados históricos
+
+### 6.2 Marina - Product Manager
+- Mapeia backlog a OKRs corporativos
+- Monitora indicadores-chave automaticamente
+- Recebe atualizações para stakeholders
+- Resume notas de reuniões anteriores
+- Extrai itens de ação automaticamente
+
+### 6.3 Roberto - Scrum Master
+- Recebe lista diária de tarefas
+- Análise de produtividade do sprint
+- Sugestões para resolver bloqueios
+- Automação de follow-ups pós-retrospectiva
+
+### 6.4 Ana - Founder/Executivo
+- Dashboard mensal com métricas principais
+- Alinhamento de entregas com metas
+- Respostas instantâneas sobre orçamento
+- Dados integrados via WhatsApp
+
+### 6.5 Lucas - Agência/PMO
+- Templates customizados por cliente
+- Checklists específicos por projeto
+- Lições aprendidas compiladas
+- Relatórios de desempenho automatizados
+
+## 7. TECNOLOGIAS E INTEGRAÇÕES
+
+### 7.1 Stack Tecnológico
+- **Base de Dados**: Supabase (vetorial, relacional e autenticação) [[memory:2763459]]
+- **LLM**: GPT-4 ou equivalente (configurado para modelo 'o3') [[memory:2759721]]
+- **Interface**: WhatsApp via Evolution API [[memory:2752661]]
+- **Orquestração**: Framework de agentes (ex: LangChain, AutoGen)
+
+### 7.2 Integrações Principais
+- **Gestão de Projetos**: ClickUp, Notion, Trello, Jira, Asana
+- **Comunicação**: WhatsApp (principal), Slack, Microsoft Teams
+- **Documentação**: Google Docs, Notion, Confluence
+- **Financeiro**: ERPs diversos via API
+- **Analytics**: Metabase, Power BI
+
+## 8. REQUISITOS FUNCIONAIS
+
+### 8.1 Requisitos Essenciais
+1. Interface conversacional via WhatsApp
+2. Criação automática de projetos a partir de dados externos
+3. Geração de cronogramas e estimativas
+4. Monitoramento em tempo real de KPIs
+5. Alertas proativos sobre riscos e desvios
+6. Relatórios personalizados por stakeholder
+7. Integração com ferramentas existentes
+8. Histórico completo de decisões e ações
+
+### 8.2 Requisitos Desejáveis
+1. Suporte multilíngue
+2. Análise preditiva baseada em histórico
+3. Sugestões de otimização de recursos
+4. Templates customizáveis por indústria
+5. Modo offline com sincronização posterior
+
+## 9. REQUISITOS NÃO-FUNCIONAIS
+
+### 9.1 Performance
+- Tempo de resposta <3 segundos para consultas simples
+- Processamento de projetos grandes (<1000 tarefas) em <30 segundos
+- Disponibilidade 99.9%
+
+### 9.2 Segurança
+- Criptografia end-to-end nas comunicações
+- Autenticação multi-fator
+- Compliance com LGPD/GDPR
+- Logs de auditoria completos
+- Isolamento de dados por cliente
+
+### 9.3 Escalabilidade
+- Suporte para 10.000+ usuários simultâneos
+- Arquitetura serverless/cloud-native
+- Auto-scaling baseado em demanda
+
+## 10. ROADMAP DE DESENVOLVIMENTO
+
+### Fase 1 - MVP (3 meses)
+1. Agente Orquestrador básico
+2. Agentes de Escopo, Cronograma e Custos
+3. Integração WhatsApp
+4. Integração com 1-2 ferramentas (Notion/ClickUp)
+5. Interface básica de configuração
+
+### Fase 2 - Expansão (3 meses)
+1. Agentes de Riscos, Stakeholders e Performance
+2. Integrações adicionais (Jira, Trello)
+3. Dashboard web complementar
+4. Sistema de templates
+
+### Fase 3 - Maturidade (3 meses)
+1. Agentes de Metodologia, Qualidade e Encerramento
+2. Análise preditiva e ML
+3. Integrações com ERPs
+4. Customização por indústria
+5. Marketplace de templates
+
+### Fase 4 - Escala (3 meses)
+1. Suporte multilíngue completo
+2. White-label para parceiros
+3. API pública
+4. Certificações de segurança
+5. Expansão internacional
+
+## 11. MODELO DE NEGÓCIO
+
+### 11.1 Precificação
+- **Starter**: $49/mês (até 5 projetos, 3 usuários)
+- **Professional**: $149/mês (até 20 projetos, 10 usuários)
+- **Business**: $499/mês (projetos ilimitados, 50 usuários)
+- **Enterprise**: Customizado (white-label, SLA premium)
+
+### 11.2 Métricas de Sucesso
+- MRR (Monthly Recurring Revenue)
+- Churn Rate <5%
+- CAC/LTV >3
+- NPS >70
+- Tempo médio de adoção <7 dias
+
+## 12. RISCOS E MITIGAÇÕES
+
+### 12.1 Riscos Técnicos
+- **Limitações de API**: Criar camada de abstração
+- **Custos de LLM**: Otimizar prompts e cache
+- **Latência**: Arquitetura distribuída
+
+### 12.2 Riscos de Mercado
+- **Competição**: Diferenciação por especialização
+- **Adoção lenta**: Onboarding simplificado
+- **Resistência cultural**: Programa de evangelização
+
+### 12.3 Riscos Regulatórios
+- **Privacidade de dados**: Compliance by design
+- **Decisões automatizadas**: Transparência e auditoria
+- **Responsabilidade legal**: Termos claros de uso
+
+## 13. CONCLUSÃO
+
+A Equipe de Agentes de IA para Gestão de Projetos representa uma evolução natural na automação de PMO, endereçando problemas críticos do mercado com tecnologia de ponta. Com foco em usabilidade (WhatsApp), integrações robustas e inteligência especializada, a solução tem potencial para capturar parte significativa de um mercado em rápido crescimento, entregando valor tangível através da redução de desperdício, aumento de produtividade e melhoria na taxa de sucesso dos projetos. 
