@@ -14,6 +14,13 @@
 				"AZURE_OPENAI_API_KEY": "AZURE_OPENAI_API_KEY_HERE",
 				"OLLAMA_API_KEY": "OLLAMA_API_KEY_HERE"
 			}
+		},
+		"notion": {
+			"command": "npx",
+			"args": ["-y", "--package=@modelcontextprotocol/server-notion", "mcp-server-notion"],
+			"env": {
+				"NOTION_TOKEN": "NOTION_TOKEN_HERE"
+			}
 		}
 	}
 }
