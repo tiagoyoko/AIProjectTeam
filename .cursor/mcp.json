@@ -16,11 +16,7 @@
 			}
 		},
 		"notion": {
-			"command": "npx",
-			"args": ["-y", "--package=@modelcontextprotocol/server-notion", "mcp-server-notion"],
-			"env": {
-				"NOTION_TOKEN": "NOTION_TOKEN_HERE"
-			}
+			"url": "https://mcp.notion.com/mcp"
 		}
 	}
 }
