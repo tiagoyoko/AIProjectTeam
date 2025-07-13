@@ -115,11 +115,21 @@ pnpm docker:clean      # Limpar containers e volumes
 
 ## 🔗 Integrações Suportadas
 
+- **Notion** ✅ (MCP Oficial Liberado)
 - ClickUp
-- Notion
 - Trello
 - Jira
 - WhatsApp (via Evolution API)
+
+### 🎉 Notion MCP
+O projeto agora inclui integração oficial com o Notion via Model Context Protocol (MCP):
+- ✅ Gerenciamento de páginas e bancos de dados
+- ✅ Sincronização bidirecional de dados
+- ✅ Criação automática de projetos
+- ✅ Exportação de relatórios
+- ✅ Interface React para integração
+
+[📖 Ver documentação completa](./docs/notion-integration.md)
 
 ## 🧪 Testes
 

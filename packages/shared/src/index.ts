@@ -1,6 +1,9 @@
 // Re-export all types from the single source of truth
 export * from './types';
 
+// Re-export services
+export * from './services/notionService';
+
 // API endpoints
 export const API_ENDPOINTS = {
   AUTH: '/api/auth',
@@ -11,6 +14,7 @@ export const API_ENDPOINTS = {
   KNOWLEDGE_BASE: '/api/knowledge-base',
   CONVERSATIONS: '/api/conversations',
   MESSAGES: '/api/messages',
+  NOTION: '/api/notion',
 } as const;
 
 export type ApiEndpoint = typeof API_ENDPOINTS[keyof typeof API_ENDPOINTS];
